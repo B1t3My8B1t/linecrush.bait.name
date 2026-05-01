@@ -21,6 +21,11 @@
   <meta name="apple-mobile-web-app-title" content="Line Crush!">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
+  <!-- Preload game fonts — helps WebViews that struggle with CanvasKit font loading -->
+  <link rel="preload" href="assets/assets/fonts/Fredoka-Variable.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="assets/assets/fonts/SpaceMono-Regular.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="assets/assets/fonts/SpaceMono-Bold.ttf" as="font" type="font/ttf" crossorigin>
+
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
@@ -40,9 +45,30 @@
       user-select: none;
     }
 
+    /* Register game fonts via CSS — helps WebViews discover fonts before CanvasKit requests them */
+    @font-face {
+      font-family: 'Fredoka';
+      src: url('assets/assets/fonts/Fredoka-Variable.ttf') format('truetype');
+      font-weight: 700;
+      font-display: block;
+    }
+    @font-face {
+      font-family: 'SpaceMono';
+      src: url('assets/assets/fonts/SpaceMono-Regular.ttf') format('truetype');
+      font-weight: 400;
+      font-display: block;
+    }
+    @font-face {
+      font-family: 'SpaceMono';
+      src: url('assets/assets/fonts/SpaceMono-Bold.ttf') format('truetype');
+      font-weight: 700;
+      font-display: block;
+    }
+
     /* Loading spinner while Flutter/CanvasKit initializes */
     .loading {
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       height: 100vh;
@@ -59,11 +85,49 @@
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
+
+    /* Unsupported browser fallback message */
+    .unsupported-msg {
+      display: none;
+      text-align: center;
+      color: #67E8F9;
+      font-family: 'SpaceMono', monospace;
+      font-size: 14px;
+      padding: 20px 40px;
+      max-width: 360px;
+    }
+    .unsupported-msg h2 {
+      color: #FBBF24;
+      font-family: sans-serif;
+      font-size: 20px;
+      margin-bottom: 12px;
+    }
+    .unsupported-msg a {
+      color: #67E8F9;
+      text-decoration: underline;
+    }
+    .unsupported-msg .copy-btn {
+      margin-top: 16px;
+      padding: 10px 24px;
+      background: transparent;
+      border: 2px solid #67E8F9;
+      color: #67E8F9;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
   <div class="loading" id="loading">
     <div class="spinner"></div>
+    <div class="unsupported-msg" id="unsupported">
+      <h2>Line Crush!</h2>
+      <p>Your browser doesn't fully support this game. For the best experience, open in <strong>Chrome</strong> or <strong>Safari</strong>.</p>
+      <button class="copy-btn" onclick="navigator.clipboard.writeText('https://linecrush.bait.name').then(function(){this.textContent='Copied!'}.bind(this))">
+        Copy link
+      </button>
+    </div>
   </div>
 
   <script>
@@ -71,6 +135,19 @@
     document.addEventListener('contextmenu', function(e) {
       e.preventDefault();
     });
+
+    // Check WebGL support — CanvasKit requires at least WebGL1
+    (function() {
+      var canvas = document.createElement('canvas');
+      var gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
+      if (!gl) {
+        // No WebGL at all — show fallback message, hide spinner
+        var spinner = document.querySelector('.loading .spinner');
+        var msg = document.getElementById('unsupported');
+        if (spinner) spinner.style.display = 'none';
+        if (msg) msg.style.display = 'block';
+      }
+    })();
   </script>
 
   <script src="flutter_bootstrap.js" async></script>

@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Background: brand dark blue with rounded corners -->
+  <rect width="512" height="512" rx="80" fill="#0D1B2A"/>
+
+  <!-- Glow layer behind piece -->
+  <defs>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="18" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- L-piece: 3 rows, 2 cols
+       ■·
+       ■·
+       ■■
+       Each cell = 110px, gap = 16px
+       Grid = 2 cols × 3 rows = 236 × 362
+       Centred: x = (512-236)/2 = 138, y = (512-362)/2 = 75
+  -->
+  <g filter="url(#glow)">
+    <!-- Row 0, Col 0 -->
+    <rect x="138" y="75" width="110" height="110" rx="16" fill="#22D3EE"/>
+    <!-- Row 1, Col 0 -->
+    <rect x="138" y="201" width="110" height="110" rx="16" fill="#22D3EE"/>
+    <!-- Row 2, Col 0 -->
+    <rect x="138" y="327" width="110" height="110" rx="16" fill="#22D3EE"/>
+    <!-- Row 2, Col 1 -->
+    <rect x="264" y="327" width="110" height="110" rx="16" fill="#22D3EE"/>
+  </g>
+
+  <!-- Subtle inner highlight on each cell for depth -->
+  <rect x="144" y="81" width="98" height="40" rx="10" fill="white" opacity="0.12"/>
+  <rect x="144" y="207" width="98" height="40" rx="10" fill="white" opacity="0.12"/>
+  <rect x="144" y="333" width="98" height="40" rx="10" fill="white" opacity="0.12"/>
+  <rect x="270" y="333" width="98" height="40" rx="10" fill="white" opacity="0.12"/>
+</svg>
